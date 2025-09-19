@@ -1,13 +1,12 @@
 package com.bipin.UserService.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bipin.UserService.dto.UserLoginDto;
 import com.bipin.UserService.model.User;
 import com.bipin.UserService.services.UserService;
 
@@ -15,16 +14,11 @@ import com.bipin.UserService.services.UserService;
 public class UserController {
 
 	@Autowired
-	private UserService service;
+	private UserService userService;
 
-	@PostMapping("/user")
-	public ResponseEntity<User> createUser(@RequestBody User user) {
-		return ResponseEntity.ok(service.save(user));
-	}
-
-	@GetMapping("/login")
-	public ResponseEntity<User> login(@RequestBody UserLoginDto dto) {
-		return ResponseEntity.ok(service.login(dto));
+	@GetMapping("/user")
+	public ResponseEntity<List<User>> getAllUsers() {
+		return ResponseEntity.ok(userService.findAll());
 	}
 
 }

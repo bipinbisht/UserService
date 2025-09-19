@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.bipin.UserService.model.User;
 
+//Spring does not understand our custom entity classes
+//Spring understands UserDetails --- which is in real world equivalent to a class holding user information
+//UserDetails is a wrapper, which will wrap our actual User model class
 public class AppUserDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
 

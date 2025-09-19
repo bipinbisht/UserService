@@ -11,6 +11,7 @@ import com.bipin.UserService.exception.PasswordNotFoundException;
 import com.bipin.UserService.exception.UserNotFoundException;
 import com.bipin.UserService.model.User;
 import com.bipin.UserService.repo.UserRepo;
+import com.bipin.UserService.security.JwtService;
 
 @Service
 public class UserService {
@@ -19,35 +20,40 @@ public class UserService {
 	private UserRepo userRepo;
 
 	@Autowired
+	private JwtService jwtService;
+
+	@Autowired
 	private BcryptEncoder bcryptEncoder;
 
-	public User save(User user) {
+	public String save(User user) {
 		String rawPassword = user.getPassword();
 		String encodedPassword = bcryptEncoder.encode(rawPassword);
 		user.setPassword(encodedPassword);
-		return userRepo.save(user);
+		User savedUser = userRepo.save(user);
+		String token = jwtService.generateToken(user.getEmail());
+		return token;
 	}
 
 	public User findById(int id) {
 		return null;
 	}
 
-	public User login(UserLoginDto dto) {
-		User user = userRepo.findByEmail(dto.getEmail());
+	public String login(UserLoginDto dto) {
+		User user = userRepo.findFirstByEmail(dto.getEmail());
 		if (user == null) {
 			throw new UserNotFoundException("No user found with this email " + dto.getEmail());
 		}
 
 		if (bcryptEncoder.matches(dto.getPassword(), user.getPassword())) {
-			return user;
-		}
-		else
+			String token = jwtService.generateToken(user.getEmail());
+			return token;
+		} else
 			throw new PasswordNotFoundException("Wrong Password");
 
 	}
 
 	public List<User> findAll() {
-		return null;
+		return userRepo.findAll();
 	}
 
 	public List<User> findByRole(int roleId) {

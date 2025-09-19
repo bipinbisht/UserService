@@ -8,6 +8,6 @@ import com.bipin.UserService.model.User;
 @Repository
 public interface UserRepo extends JpaRepository<User,Integer>{
 	
-	public User findByEmail(String email);
+	public User findFirstByEmail(String email);
 
 }
